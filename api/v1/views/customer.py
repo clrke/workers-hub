@@ -33,7 +33,7 @@ def request(req):
         range_max = data['range_max']
         description = data['description']
         profession_names = data['tags']
-        user = User.objects.get(id=data['user_id'])
+        user = req.user
         image_files = req.FILES
 
         request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user, status='OPEN')
@@ -84,7 +84,7 @@ def request(req):
         })
 
 
-@csrf_exempt
+@customer_api_confirmation
 def show_worker(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     user = worker.user
@@ -101,7 +101,7 @@ def show_worker(request, worker_id):
                          }})
 
 
-@csrf_exempt
+@customer_api_confirmation
 def accept_proposal(request, request_id, proposal_id):
     # worker = Worker.objects.get(id=worker_id)
     # user = worker.user
@@ -111,6 +111,7 @@ def accept_proposal(request, request_id, proposal_id):
                          'message': 'Not implemented yet.'})
 
 
+@customer_api_confirmation
 def list_proposals(req, request_id):
     request = Request.objects.get(id=request_id)
     proposals = request.proposal_set.all()
