@@ -10,6 +10,9 @@ class UserProfile(models.Model):
     mobile_number = models.CharField(max_length=255)
     user = models.ForeignKey(User)
 
+    def __str__(self):
+        return self.user.username
+
 
 class Review(models.Model):
     user = models.ForeignKey(User)
