@@ -5,7 +5,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
-from workers_hub.exceptions import TypeNotSpecifiedException
+from workers_hub.exceptions import TypeNotSpecifiedException, TypeNotValidException
 
 
 @csrf_exempt
@@ -33,6 +33,8 @@ def login(request):
                 user_id = user.id
             elif request_type == 'worker':
                 user_id = user.workers_set.first().id
+            else:
+                raise TypeNotValidException()
             return JsonResponse({
                 'status': 'success',
                 'message': user_id,
@@ -49,6 +51,14 @@ def login(request):
         response = JsonResponse({
             'status': 'error',
             'message': 'Type not specified (customer or worker)'
+        })
+        response.status_code = 404
+
+        return response
+    except TypeNotValidException:
+        response = JsonResponse({
+            'status': 'error',
+            'message': 'Type is not valid (customer or worker)'
         })
         response.status_code = 404
 
