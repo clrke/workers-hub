@@ -101,6 +101,7 @@ def proposals(req):
         'message': [
             {
                 'request': {
+                    'id': proposal.request.id,
                     'subject': proposal.request.subject,
                     'description': proposal.request.description,
                     'range_min': proposal.request.range_min,

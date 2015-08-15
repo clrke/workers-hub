@@ -11,7 +11,8 @@ def request(req):
 
         return JsonResponse({
             'status': 'success',
-            'message': [{'subject': request.subject,
+            'message': [{'id': request.id,
+                         'subject': request.subject,
                          'description': request.description,
                          'range_min': request.range_min,
                          'range_max': request.range_max,
@@ -119,6 +120,7 @@ def list_proposals(req, request_id):
     return JsonResponse({
         'status': 'success',
         'message': [{
+                        'id': proposal.id,
                         'worker': proposal.worker.user.username,
                         'cost': proposal.cost,
                         'message': proposal.message,
