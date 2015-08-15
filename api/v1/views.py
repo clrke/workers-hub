@@ -161,5 +161,5 @@ def show_worker(request, id):
         'last': user.last_name,
         'email': user.email,
         'mobile': profile.mobile_number,
-        'reviews': [review.message for review in reviews]
+        'reviews': [review.message for review in reviews if review.type == 'CUSTOMER_WORKER']
     })
