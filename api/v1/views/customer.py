@@ -35,7 +35,8 @@ def request(req):
         user = req.user
         image_files = req.FILES
 
-        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user, status=Request.OPEN)
+        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user,
+                          status=Request.OPEN)
         request.save()
 
         professions = []
@@ -154,4 +155,39 @@ def cancel_request(request, request_id):
         'message': 'Invalid request method.',
     })
     response.status_code = 404
+
+
+@customer_api_confirmation
+def write_review(req, request_id):
+    if req.method == 'POST':
+        try:
+            data = json.loads(req.body)
+        except ValueError:
+            data = req.POST
+
+        user = req.user
+        worker = Worker.objects.get(id=data['worker_id'])
+        rating = data['rating']
+        type = data['type']
+        message = data['message']
+
+        review = Review(user=user, worker=worker, rating=rating, type=type, message=message)
+
+        review.save()
+
+        request = Request.objects.get(id=request_id)
+        request.status = Request.CLOSED
+        request.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': review.user.username
+        })
+
+    response = JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method'
+    })
+    response.status_code = 405
+
     return response
