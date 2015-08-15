@@ -32,7 +32,8 @@ def proposal(req, request_id):
             'message': proposal.worker.user.username,
         })
     elif req.method == 'DELETE':
-        proposal = Proposal.objects.get(id=request_id)
+
+        proposal = Proposal.objects.filter(worker_id=req.worker.id, request_id=request_id).first()
         if proposal.status == Proposal.OPEN:
             proposal.delete()
 
