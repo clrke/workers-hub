@@ -4,3 +4,7 @@ class TypeNotSpecifiedException(Exception):
 
 class TypeNotValidException(Exception):
     pass
+
+
+class MissingArgumentsException(Exception):
+    pass
