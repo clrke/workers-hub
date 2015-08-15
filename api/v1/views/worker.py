@@ -7,27 +7,50 @@ from workers_hub.models import Request
 
 
 @worker_api_confirmation
-def create_proposal(request, request_id):
-    try:
-        data = json.loads(request.body)
-    except ValueError:
-        data = request.POST
+def proposal(req, request_id):
+    if req.method == 'POST':
+        try:
+            data = json.loads(req.body)
+        except ValueError:
+            data = req.POST
 
-    if 'message' not in data:
-        raise MissingArgumentsException('message')
-    if 'cost' not in data:
-        raise MissingArgumentsException('cost')
+        if 'message' not in data:
+            raise MissingArgumentsException('message')
+        if 'cost' not in data:
+            raise MissingArgumentsException('cost')
 
-    worker = request.worker
-    request = Request.objects.get(id=request_id)
+        worker = req.worker
+        request = Request.objects.get(id=request_id)
 
-    proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status=Proposal.OPEN, request=request)
+        proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status=Proposal.OPEN,
+                            request=request)
 
-    proposal.save()
+        proposal.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': proposal.worker.user.username,
+        })
+    elif req.method == 'DELETE':
+        proposal = Proposal.objects.get(id=request_id)
+        if proposal.status == Proposal.OPEN:
+            proposal.delete()
+
+            return JsonResponse({
+                'status': 'success',
+                'message': proposal.request.subject,
+            })
+        else:
+            response = JsonResponse({
+                'status': 'error',
+                'message': 'Only OPEN bids can be cancelled.',
+            })
+            response.status_code = 404
+            return response
 
     return JsonResponse({
-        'status': 'success',
-        'message': proposal.worker.user.username,
+        'status': 'error',
+        'message': 'Invalid request method.',
     })
 
 
