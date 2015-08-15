@@ -59,7 +59,7 @@ def proposal(req, request_id):
 def requests(req):
     worker = req.worker
 
-    professions = worker.profession_set
+    professions = worker.professions
 
     available_requests = []
 

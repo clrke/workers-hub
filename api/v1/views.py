@@ -120,7 +120,7 @@ def request(req):
         for worker in Worker.objects.all():
             available = True
             for profession in professions:
-                if not worker.profession_set.filter(name=profession.name).exists():
+                if not worker.professions.filter(name=profession.name).exists():
                     available = False
                     break
             if available:
