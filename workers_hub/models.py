@@ -5,6 +5,9 @@ from django.db import models
 class Worker(models.Model):
     user = models.ForeignKey(User)
 
+    def __str__(self):
+        return self.user.username
+
 
 class UserProfile(models.Model):
     mobile_number = models.CharField(max_length=255)
@@ -17,8 +20,12 @@ class UserProfile(models.Model):
 class Review(models.Model):
     user = models.ForeignKey(User)
     worker = models.ForeignKey(Worker)
+    rating = models.SmallIntegerField()
     type = models.CharField(max_length=255)
     message = models.TextField()
+
+    def __str__(self):
+        return self.user.username
 
 
 class Profession(models.Model):
@@ -47,6 +54,9 @@ class Image(models.Model):
     url = models.CharField(max_length=255)
     request = models.ForeignKey(Request)
 
+    def __str__(self):
+        return self.request.subject
+
 
 class Proposal(models.Model):
     worker = models.ForeignKey(Worker)
@@ -57,4 +67,3 @@ class Proposal(models.Model):
 
     def __str__(self):
         return self.request.subject
-
