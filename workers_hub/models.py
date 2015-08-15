@@ -25,6 +25,10 @@ class Profession(models.Model):
 class Request(models.Model):
     user = models.ForeignKey(User)
     professions = models.ManyToManyField(Profession)
+    subject = models.CharField(max_length=255)
+    description = models.TextField()
+    range_min = models.IntegerField()
+    range_max = models.IntegerField()
 
 
 class Proposal(models.Model):
