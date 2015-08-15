@@ -101,8 +101,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-APPEND_SLASH = False
-
 if 'PRODUCTION' in os.environ:
     import dj_database_url
 
