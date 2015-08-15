@@ -36,3 +36,4 @@ class Proposal(models.Model):
 
 class Images(models.Model):
     url = models.CharField(max_length=255)
+    request = models.ForeignKey(Request)
