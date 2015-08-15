@@ -16,7 +16,7 @@ def login(request):
         data = request.POST
 
     try:
-        if 'type' not in request.POST:
+        if 'type' not in data:
             raise TypeNotSpecifiedException()
 
         username = data['username']
