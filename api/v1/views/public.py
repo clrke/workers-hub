@@ -30,7 +30,7 @@ def login(request):
         if request_type == 'customer':
             user_id = user.id
         elif request_type == 'worker':
-            user_id = user.workers_set.first().id
+            user_id = user.worker_set.first().id
         else:
             raise TypeNotValidException()
 
