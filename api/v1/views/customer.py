@@ -168,7 +168,7 @@ def write_review(req, request_id):
         user = req.user
         worker = Worker.objects.get(id=data['worker_id'])
         rating = data['rating']
-        type = data['type']
+        type = Review.CUSTOMER_WORKER
         message = data['message']
 
         review = Review(user=user, worker=worker, rating=rating, type=type, message=message)
