@@ -9,7 +9,6 @@ from workers_hub.models import Request, Worker, Profession, Image
 @customer_api_confirmation
 def request(req):
     if req.method == 'GET':
-        data = req.GET
         user = req.user
 
         return JsonResponse({
