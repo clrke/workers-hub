@@ -21,12 +21,13 @@ class Profession(models.Model):
     name = models.CharField(max_length=255)
 
 
-class Proposal(models.Model):
+class Request(models.Model):
     user = models.ForeignKey(User)
-    cost = models.IntegerField()
-    message = models.TextField()
-    status = models.CharField(max_length=255)
-    request = models.ForeignKey(Request)
+    professions = models.ManyToManyField(Profession)
+    subject = models.CharField(max_length=255)
+    description = models.TextField()
+    range_min = models.IntegerField()
+    range_max = models.IntegerField()
 
 
 class Image(models.Model):
@@ -34,11 +35,10 @@ class Image(models.Model):
     request = models.ForeignKey(Request)
 
 
-class Request(models.Model):
+class Proposal(models.Model):
     user = models.ForeignKey(User)
-    professions = models.ManyToManyField(Profession)
-    images = models.ManyToManyField(Image)
-    subject = models.CharField(max_length=255)
-    description = models.TextField()
-    range_min = models.IntegerField()
-    range_max = models.IntegerField()
+    cost = models.IntegerField()
+    message = models.TextField()
+    status = models.CharField(max_length=255)
+    request = models.ForeignKey(Request)
+
