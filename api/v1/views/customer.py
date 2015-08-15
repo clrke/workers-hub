@@ -35,7 +35,8 @@ def request(req):
         user = req.user
         image_files = req.FILES
 
-        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user, status=Request.OPEN)
+        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user,
+                          status=Request.OPEN)
         request.save()
 
         professions = []
@@ -125,4 +126,31 @@ def list_proposals(req, request_id):
                         'status': proposal.status,
 
                     } for proposal in proposals]
+    })
+
+
+@customer_api_confirmation
+def write_review(req, request_id):
+    try:
+        data = json.loads(req.body)
+    except ValueError:
+        data = req.POST
+
+    user = data['user']
+    worker = data['worker']
+    rating = data['rating']
+    type = data['type']
+    message = data['message']
+
+    review = Review(user=user, worker=worker, rating=rating, type=type, message=message)
+
+    review.save()
+
+    request = Request.objects.get(id=request_id)
+    request.status = Request.CLOSED
+    request.save()
+
+    return JsonResponse({
+        'status': 'success',
+        'message': review.user.username
     })
