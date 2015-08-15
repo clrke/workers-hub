@@ -25,3 +25,14 @@ class Profession(models.Model):
 class Request(models.Model):
     user = models.ForeignKey(User)
     professions = models.ManyToManyField(Profession)
+
+
+class Proposal(models.Model):
+    user = models.ForeignKey(User)
+    cost = models.IntegerField()
+    message = models.TextField()
+    status = models.CharField(max_length=255)
+
+
+class Images(models.Model):
+    url = models.CharField(max_length=255)
