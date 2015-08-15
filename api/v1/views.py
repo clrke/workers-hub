@@ -169,16 +169,33 @@ def create_request(req):
     })
 
 
+@csrf_exempt
+def list_workers(request):
+    workers = Worker.objects.all()
+    users = [worker.user for worker in workers]
+
+    return JsonResponse({'status': 'success',
+                         'message': [{'username': user.username,
+                                      'first': user.first_name,
+                                      'last': user.last_name,
+                                      'email': user.email,
+                                      'mobile': user.userprofile_set.first().mobile_number,
+                                      'reviews': [review.message for review in user.review_set.all() if review.type == 'CUSTOMER_WORKER']
+                                      } for user in users]}, safe=False)
+
+
+@csrf_exempt
 def show_worker(request, worker_id):
     worker = Worker.objects.get(id=worker_id)
     user = worker.user
     profile = user.userprofile_set.first()
     reviews = worker.review_set.all()
-    return JsonResponse({
-        'username': user.username,
-        'first': user.first_name,
-        'last': user.last_name,
-        'email': user.email,
-        'mobile': profile.mobile_number,
-        'reviews': [review.message for review in reviews if review.type == 'CUSTOMER_WORKER']
-    })
+    return JsonResponse({'status': 'success',
+                         'message': {
+                             'username': user.username,
+                             'first': user.first_name,
+                             'last': user.last_name,
+                             'email': user.email,
+                             'mobile': profile.mobile_number,
+                             'reviews': [review.message for review in reviews if review.type == 'CUSTOMER_WORKER']
+                         }})
