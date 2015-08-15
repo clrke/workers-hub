@@ -24,6 +24,9 @@ class Review(models.Model):
     type = models.CharField(max_length=255)
     message = models.TextField()
 
+    CUSTOMER_WORKER = 'CUSTOMER_WORKER'
+    WORKER_CUSTOMER = 'WORKER_CUSTOMER'
+
     def __str__(self):
         return self.user.username
 
@@ -46,6 +49,10 @@ class Request(models.Model):
     range_max = models.IntegerField()
     status = models.CharField(max_length=255)
 
+    OPEN = 'OPEN'
+    ACCEPTED = 'ACCEPTED'
+    CLOSED = 'CLOSED'
+
     def __str__(self):
         return self.subject
 
@@ -64,6 +71,9 @@ class Proposal(models.Model):
     message = models.TextField()
     status = models.CharField(max_length=255)
     request = models.ForeignKey(Request)
+
+    OPEN = 'OPEN'
+    ACCEPTED = 'ACCEPTED'
 
     def __str__(self):
         return self.request.subject

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from workers_hub.decorators import customer_api_confirmation
-from workers_hub.models import Request, Worker, Profession, Image, Proposal
+from workers_hub.models import Request, Worker, Profession, Image, Proposal, Review
 
 
 @customer_api_confirmation
@@ -37,7 +37,7 @@ def request(req):
         user = req.user
         image_files = req.FILES
 
-        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user, status='OPEN')
+        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user, status=Request.OPEN)
         request.save()
 
         professions = []
@@ -98,7 +98,7 @@ def show_worker(request, worker_id):
                              'last': user.last_name,
                              'email': user.email,
                              'mobile': profile.mobile_number,
-                             'reviews': [review.message for review in reviews if review.type == 'CUSTOMER_WORKER']
+                             'reviews': [review.message for review in reviews if review.type == Review.CUSTOMER_WORKER]
                          }})
 
 

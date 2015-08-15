@@ -22,7 +22,7 @@ def create_proposal(request, request_id):
     worker = request.worker
     request = Request.objects.get(id=request_id)
 
-    proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status='OPEN', request=request)
+    proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status=Proposal.OPEN, request=request)
 
     proposal.save()
 
