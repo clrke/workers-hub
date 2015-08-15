@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
 from workers_hub.exceptions import TypeNotSpecifiedException, TypeNotValidException, MissingArgumentsException
-from workers_hub.models import Proposal, Request, Worker
+from workers_hub.models import Proposal, Request, Worker, Profession, Image
 
 
 @csrf_exempt
@@ -103,4 +103,48 @@ def create_proposal(request):
     return JsonResponse({
         'status': 'success',
         'message': proposal.worker.user.username,
+    })
+
+
+@csrf_exempt
+def create_request(req):
+    try:
+        data = json.loads(req.body)
+    except ValueError:
+        data = req.POST
+
+    subject = data['subject']
+    range_min = data['range_min']
+    range_max = data['range_max']
+    description = data['description']
+    profession_names = data['tags']
+    user_id = data['user_id']
+    image_files = req.FILES
+
+    request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user_id=user_id)
+    request.save()
+
+    professions = []
+    images = []
+
+    for profession_name in profession_names:
+        profession = Profession.objects.get(name=profession_name)
+        professions.append(profession)
+
+    for image_file in image_files:
+        image = Image(url=image_file, request=request)
+        image.save()
+        with open('images/%4d.jpg' % image.id, 'wb+') as destination:
+            for chunk in image_file.chunks():
+                destination.write(chunk)
+        images.append(image)
+
+    print professions
+
+    for profession in professions:
+        request.professions.add(profession)
+
+    return JsonResponse({
+        'status': 'ok',
+        'message': request.subject
     })
