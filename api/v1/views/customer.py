@@ -131,26 +131,35 @@ def list_proposals(req, request_id):
 
 @customer_api_confirmation
 def write_review(req, request_id):
-    try:
-        data = json.loads(req.body)
-    except ValueError:
-        data = req.POST
+    if req.method == 'POST':
+        try:
+            data = json.loads(req.body)
+        except ValueError:
+            data = req.POST
 
-    user = data['user']
-    worker = data['worker']
-    rating = data['rating']
-    type = data['type']
-    message = data['message']
+        user = data['user']
+        worker = data['worker']
+        rating = data['rating']
+        type = data['type']
+        message = data['message']
 
-    review = Review(user=user, worker=worker, rating=rating, type=type, message=message)
+        review = Review(user=user, worker=worker, rating=rating, type=type, message=message)
 
-    review.save()
+        review.save()
 
-    request = Request.objects.get(id=request_id)
-    request.status = Request.CLOSED
-    request.save()
+        request = Request.objects.get(id=request_id)
+        request.status = Request.CLOSED
+        request.save()
 
-    return JsonResponse({
-        'status': 'success',
-        'message': review.user.username
+        return JsonResponse({
+            'status': 'success',
+            'message': review.user.username
+        })
+
+    response = JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method'
     })
+    response.status_code = 405
+
+    return response
