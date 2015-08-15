@@ -104,7 +104,8 @@ def request(req):
         user = User.objects.get(id=data['user_id'])
         image_files = req.FILES
 
-        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user, status='OPEN')
+        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user,
+                          status='OPEN')
         request.save()
 
         professions = []
@@ -153,34 +154,49 @@ def request(req):
 
 
 @csrf_exempt
-def create_proposal(request, request_id):
-    try:
-        data = json.loads(request.body)
-    except ValueError:
-        data = request.POST
+def proposal(request, request_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except ValueError:
+            data = request.POST
 
-    if 'message' not in data:
-        raise MissingArgumentsException('message')
-    if 'cost' not in data:
-        raise MissingArgumentsException('cost')
-    if 'worker_id' not in data:
-        raise MissingArgumentsException('worker_id')
+        if 'message' not in data:
+            raise MissingArgumentsException('message')
+        if 'cost' not in data:
+            raise MissingArgumentsException('cost')
+        if 'worker_id' not in data:
+            raise MissingArgumentsException('worker_id')
 
-    worker = Worker.objects.get(id=data['worker_id'])
-    request = Request.objects.get(id=request_id)
+        worker = Worker.objects.get(id=data['worker_id'])
+        request = Request.objects.get(id=request_id)
 
-    proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status='OPEN', request=request)
+        proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status='OPEN', request=request)
 
-    proposal.save()
+        proposal.save()
 
-    return JsonResponse({
-        'status': 'success',
-        'message': proposal.worker.user.username,
-    })
+        return JsonResponse({
+            'status': 'success',
+            'message': proposal.worker.user.username,
+        })
+    elif request.method == 'GET':
+        request = Request.objects.get(id=request_id)
+        proposals = request.proposal_set.all()
+        return JsonResponse({
+            'status': 'success',
+            'message': [{
+                            'worker': proposal.worker.user.username,
+                            'cost': proposal.cost,
+                            'message': proposal.message,
+                            'request': proposal.request.subject,
+                            'status': proposal.status,
+
+                        } for proposal in proposals]
+        })
 
 
 @csrf_exempt
-def list_workers(request):
+def list_proposals(request):
     workers = Worker.objects.all()
     users = [worker.user for worker in workers]
 
@@ -190,7 +206,8 @@ def list_workers(request):
                                       'last': user.last_name,
                                       'email': user.email,
                                       'mobile': user.userprofile_set.first().mobile_number,
-                                      'reviews': [review.message for review in user.review_set.all() if review.type == 'CUSTOMER_WORKER']
+                                      'reviews': [review.message for review in user.review_set.all() if
+                                                  review.type == 'CUSTOMER_WORKER']
                                       } for user in users]}, safe=False)
 
 
