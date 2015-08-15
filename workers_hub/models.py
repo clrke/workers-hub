@@ -48,3 +48,6 @@ class Proposal(models.Model):
     status = models.CharField(max_length=255)
     request = models.ForeignKey(Request)
 
+    def __str__(self):
+        return self.request.subject
+
