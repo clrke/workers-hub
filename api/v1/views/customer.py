@@ -19,6 +19,7 @@ def request(req):
                          'range_max': request.range_max,
                          'tags': [profession.name for profession in request.professions.all()],
                          'images': [image.url for image in request.image_set.all()],
+                         'status': request.status,
                          } for request in user.request_set.all()],
         })
     else:
