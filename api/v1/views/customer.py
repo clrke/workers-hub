@@ -10,7 +10,7 @@ from workers_hub.models import Request, Worker, Profession, Image
 def request(req):
     if req.method == 'GET':
         data = req.GET
-        user = User.objects.get(id=data['user_id'])
+        user = req.user
 
         return JsonResponse({
             'status': 'success',

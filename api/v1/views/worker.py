@@ -1,12 +1,13 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from workers_hub.decorators import worker_api_confirmation
 from workers_hub.exceptions import MissingArgumentsException
 from workers_hub.models import Worker, Proposal
 from workers_hub.models import Request
 
 
-@csrf_exempt
+@worker_api_confirmation
 def create_proposal(request, request_id):
     try:
         data = json.loads(request.body)
@@ -17,10 +18,8 @@ def create_proposal(request, request_id):
         raise MissingArgumentsException('message')
     if 'cost' not in data:
         raise MissingArgumentsException('cost')
-    if 'worker_id' not in data:
-        raise MissingArgumentsException('worker_id')
 
-    worker = Worker.objects.get(id=data['worker_id'])
+    worker = request.worker
     request = Request.objects.get(id=request_id)
 
     proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status='OPEN', request=request)
