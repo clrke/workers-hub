@@ -26,6 +26,7 @@ class Proposal(models.Model):
     cost = models.IntegerField()
     message = models.TextField()
     status = models.CharField(max_length=255)
+    request = models.ForeignKey(Request)
 
 
 class Image(models.Model):
