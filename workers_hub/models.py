@@ -20,6 +20,9 @@ class Review(models.Model):
 class Profession(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class Request(models.Model):
     user = models.ForeignKey(User)
@@ -28,6 +31,9 @@ class Request(models.Model):
     description = models.TextField()
     range_min = models.IntegerField()
     range_max = models.IntegerField()
+
+    def __str__(self):
+        return self.subject
 
 
 class Image(models.Model):
