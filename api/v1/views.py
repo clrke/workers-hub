@@ -169,8 +169,8 @@ def create_request(req):
     })
 
 
-def show_worker(request, id):
-    worker = Worker.objects.get(id=id)
+def show_worker(request, worker_id):
+    worker = Worker.objects.get(id=worker_id)
     user = worker.user
     profile = user.userprofile_set.first()
     reviews = worker.review_set.all()
