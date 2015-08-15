@@ -78,6 +78,7 @@ def requests(req):
         'status': 'success',
         'message': [
             {
+                'id': request.id,
                 'subject': request.subject,
                 'description': request.description,
                 'range_min': request.range_min,
