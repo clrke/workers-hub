@@ -8,3 +8,11 @@ class TypeNotValidException(Exception):
 
 class MissingArgumentsException(Exception):
     pass
+
+
+class MissingApiKeyException(Exception):
+    pass
+
+
+class UnauthorizedApiKeyException(Exception):
+    pass
