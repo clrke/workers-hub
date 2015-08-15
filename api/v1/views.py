@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 def login(request):
     try:
         data = json.loads(request.body)
-    except Exception as e:
+    except ValueError:
         data = request.POST
 
     username = data['username']
