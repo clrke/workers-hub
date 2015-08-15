@@ -117,3 +117,30 @@ def proposals(req):
             for proposal in worker.proposal_set.all()
         ],
     })
+
+
+@worker_api_confirmation
+def accepted(request):
+    worker = request.worker
+
+    return JsonResponse({
+        'status': 'success',
+        'message': [
+            {
+                'request': {
+                    'id': proposal.request.id,
+                    'subject': proposal.request.subject,
+                    'description': proposal.request.description,
+                    'range_min': proposal.request.range_min,
+                    'range_max': proposal.request.range_max,
+                    'tags': [profession.name for profession in proposal.request.professions.all()],
+                    'images': [image.url for image in proposal.request.image_set.all()],
+                    'status': proposal.request.status,
+                },
+                'cost': proposal.cost,
+                'message': proposal.message,
+                'status': proposal.status,
+            }
+            for proposal in worker.proposal_set.all() if proposal.status == Proposal.ACCEPTED
+        ],
+    })

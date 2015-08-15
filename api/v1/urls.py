@@ -16,4 +16,5 @@ urlpatterns = [
     url(r'^professions', api.v1.views.public.professions),
     url(r'^worker/requests$', api.v1.views.worker.requests),
     url(r'^worker/proposals$', api.v1.views.worker.proposals),
+    url(r'^worker/accepted$', api.v1.views.worker.accepted),
 ]
