@@ -75,70 +75,85 @@ def login(request):
 
 
 @csrf_exempt
-def create_request(req):
-    try:
-        data = json.loads(req.body)
-    except ValueError:
-        data = req.POST
+def request(req):
+    if req.method == 'GET':
+        data = req.GET
+        user = User.objects.get(id=data['user_id'])
 
-    subject = data['subject']
-    range_min = data['range_min']
-    range_max = data['range_max']
-    description = data['description']
-    profession_names = data['tags']
-    user = User.objects.get(id=data['user_id'])
-    image_files = req.FILES
-
-    request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user, status='OPEN')
-    request.save()
-
-    professions = []
-    images = []
-
-    for profession_name in profession_names:
-        profession = Profession.objects.get(name=profession_name)
-        professions.append(profession)
-
-    available_workers = []
-
-    for worker in Worker.objects.all():
-        available = True
-        for profession in professions:
-            if not worker.profession_set.filter(name=profession.name).exists():
-                available = False
-                break
-        if available:
-            available_workers.append(worker)
-
-    if len(available_workers) == 0:
-        response = JsonResponse({
-            'status': 'error',
-            'message': 'No available workers for specified professions',
+        return JsonResponse({
+            'status': 'success',
+            'message': [{'subject': request.subject,
+                         'description': request.description,
+                         'range_min': request.range_min,
+                         'range_max': request.range_max,
+                         'tags': [profession.name for profession in request.professions.all()],
+                         } for request in user.request_set.all()],
         })
-        response.status_code = 404
-        return response
+    else:
 
-    for image_file in image_files:
-        image = Image(url=image_file, request=request)
-        image.save()
-        with open('images/%4d.jpg' % image.id, 'wb+') as destination:
-            for chunk in image_file.chunks():
-                destination.write(chunk)
-        images.append(image)
+        try:
+            data = json.loads(req.body)
+        except ValueError:
+            data = req.POST
 
-    print professions
+        subject = data['subject']
+        range_min = data['range_min']
+        range_max = data['range_max']
+        description = data['description']
+        profession_names = data['tags']
+        user = User.objects.get(id=data['user_id'])
+        image_files = req.FILES
 
-    for profession in professions:
-        request.professions.add(profession)
+        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user, status='OPEN')
+        request.save()
 
-    return JsonResponse({
-        'status': 'ok',
-        'message': request.subject
-    })
+        professions = []
+        images = []
+
+        for profession_name in profession_names:
+            profession = Profession.objects.get(name=profession_name)
+            professions.append(profession)
+
+        available_workers = []
+
+        for worker in Worker.objects.all():
+            available = True
+            for profession in professions:
+                if not worker.profession_set.filter(name=profession.name).exists():
+                    available = False
+                    break
+            if available:
+                available_workers.append(worker)
+
+        if len(available_workers) == 0:
+            response = JsonResponse({
+                'status': 'error',
+                'message': 'No available workers for specified professions',
+            })
+            response.status_code = 404
+            return response
+
+        for image_file in image_files:
+            image = Image(url=image_file, request=request)
+            image.save()
+            with open('images/%4d.jpg' % image.id, 'wb+') as destination:
+                for chunk in image_file.chunks():
+                    destination.write(chunk)
+            images.append(image)
+
+        print professions
+
+        for profession in professions:
+            request.professions.add(profession)
+
+        return JsonResponse({
+            'status': 'ok',
+            'message': request.subject
+        })
 
 
 @csrf_exempt
-def create_proposal(request):
+def create_proposal(request, request_id):
     try:
         data = json.loads(request.body)
     except ValueError:
@@ -148,18 +163,13 @@ def create_proposal(request):
         raise MissingArgumentsException('message')
     if 'cost' not in data:
         raise MissingArgumentsException('cost')
-    if 'status' not in data:
-        raise MissingArgumentsException('status')
     if 'worker_id' not in data:
         raise MissingArgumentsException('worker_id')
-    if 'request_id' not in data:
-        raise MissingArgumentsException('request_id')
 
     worker = Worker.objects.get(id=data['worker_id'])
-    request = Request.objects.get(id=data['request_id'])
+    request = Request.objects.get(id=request_id)
 
-    proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status=data['status'],
-                        request=request)
+    proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status='OPEN', request=request)
 
     proposal.save()
 
@@ -199,3 +209,13 @@ def show_worker(request, worker_id):
                              'mobile': profile.mobile_number,
                              'reviews': [review.message for review in reviews if review.type == 'CUSTOMER_WORKER']
                          }})
+
+
+@csrf_exempt
+def accept_proposal(request, request_id, proposal_id):
+    # worker = Worker.objects.get(id=worker_id)
+    # user = worker.user
+    # profile = user.userprofile_set.first()
+    # reviews = worker.review_set.all()
+    return JsonResponse({'status': 'error',
+                         'message': 'Not implemented yet.'})
