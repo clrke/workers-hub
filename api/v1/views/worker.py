@@ -1,9 +1,8 @@
 import json
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from workers_hub.decorators import worker_api_confirmation
 from workers_hub.exceptions import MissingArgumentsException
-from workers_hub.models import Worker, Proposal
+from workers_hub.models import Proposal
 from workers_hub.models import Request
 
 
