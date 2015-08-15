@@ -18,7 +18,6 @@ class Review(models.Model):
 
 
 class Profession(models.Model):
-    user = models.ForeignKey(User)
     name = models.CharField(max_length=255)
 
 
