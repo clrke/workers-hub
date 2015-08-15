@@ -36,7 +36,7 @@ class Image(models.Model):
 
 
 class Proposal(models.Model):
-    user = models.ForeignKey(User)
+    worker = models.ForeignKey(Worker)
     cost = models.IntegerField()
     message = models.TextField()
     status = models.CharField(max_length=255)
