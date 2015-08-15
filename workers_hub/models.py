@@ -33,6 +33,7 @@ class Request(models.Model):
     description = models.TextField()
     range_min = models.IntegerField()
     range_max = models.IntegerField()
+    status = models.CharField(max_length=255)
 
     def __str__(self):
         return self.subject
