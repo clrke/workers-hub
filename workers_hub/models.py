@@ -20,7 +20,8 @@ class Review(models.Model):
 
 class Profession(models.Model):
     name = models.CharField(max_length=255)
-    workers = models.ManyToManyField(Worker)
+    approved = models.BooleanField()
+    workers = models.ManyToManyField(Worker, blank=True)
 
     def __str__(self):
         return self.name
