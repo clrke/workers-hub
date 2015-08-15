@@ -37,7 +37,7 @@ def login(request):
 
         return JsonResponse({
             'status': 'success',
-            'message': user_id,
+            'message': str(user_id),
         })
     except ObjectDoesNotExist:
         response = JsonResponse({
