@@ -126,3 +126,32 @@ def list_proposals(req, request_id):
 
                     } for proposal in proposals]
     })
+
+
+@customer_api_confirmation
+def cancel_request(request, request_id):
+    if request.method == 'DELETE':
+        req = request.user.request_set.get(id=request_id)
+
+        if req.status == Request.OPEN:
+            req.delete()
+
+            return JsonResponse({
+                'status': 'success',
+                'message': req.subject
+            })
+
+        else:
+            response = JsonResponse({
+                'status': 'error',
+                'message': 'Cannot cancel once a bidder has been accepted.',
+            })
+            response.status_code = 404
+            return response
+
+    response = JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method.',
+    })
+    response.status_code = 404
+    return response
