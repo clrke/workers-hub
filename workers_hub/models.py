@@ -19,6 +19,7 @@ class Review(models.Model):
 
 class Profession(models.Model):
     name = models.CharField(max_length=255)
+    workers = models.ManyToManyField(Worker)
 
     def __str__(self):
         return self.name

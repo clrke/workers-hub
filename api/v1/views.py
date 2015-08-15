@@ -131,6 +131,25 @@ def create_request(req):
         profession = Profession.objects.get(name=profession_name)
         professions.append(profession)
 
+    available_workers = []
+
+    for worker in Worker.objects.all():
+        available = True
+        for profession in professions:
+            if not worker.profession_set.filter(name=profession.name).exists():
+                available = False
+                break
+        if available:
+            available_workers.append(worker)
+
+    if len(available_workers) == 0:
+        response = JsonResponse({
+            'status': 'error',
+            'message': 'No available workers for specified professions',
+        })
+        response.status_code = 404
+        return response
+
     for image_file in image_files:
         image = Image(url=image_file, request=request)
         image.save()
