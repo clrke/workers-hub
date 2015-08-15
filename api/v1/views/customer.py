@@ -36,10 +36,6 @@ def request(req):
         user = req.user
         image_files = req.FILES
 
-        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user,
-                          status=Request.OPEN)
-        request.save()
-
         professions = []
         images = []
 
@@ -66,6 +62,10 @@ def request(req):
             response.status_code = 404
             return response
 
+        request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user,
+                          status=Request.OPEN)
+        request.save()
+
         for image_file in image_files:
             image = Image(url=image_file, request=request)
             image.save()
@@ -73,8 +73,6 @@ def request(req):
                 for chunk in image_file.chunks():
                     destination.write(chunk)
             images.append(image)
-
-        print professions
 
         for profession in professions:
             request.professions.add(profession)
