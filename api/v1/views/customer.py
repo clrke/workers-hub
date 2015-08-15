@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from workers_hub.decorators import customer_api_confirmation
-from workers_hub.exceptions import MissingApiKeyException, UnauthorizedApiKeyException
 from workers_hub.models import Request, Worker, Profession, Image
 
 
