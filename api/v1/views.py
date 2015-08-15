@@ -118,10 +118,10 @@ def create_request(req):
     range_max = data['range_max']
     description = data['description']
     profession_names = data['tags']
-    user_id = data['user_id']
+    user = User.objects.get(id=data['user_id'])
     image_files = req.FILES
 
-    request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user_id=user_id)
+    request = Request(subject=subject, range_min=range_min, range_max=range_max, description=description, user=user)
     request.save()
 
     professions = []
