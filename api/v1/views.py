@@ -16,29 +16,29 @@ def login(request):
         data = request.POST
 
     try:
-        if 'type' not in request.GET:
+        if 'type' not in request.POST:
             raise TypeNotSpecifiedException()
 
         username = data['username']
         password = data['password']
+        request_type = data['type']
 
         user = User.objects.get(username=username)
 
         if not user.check_password(password):
             raise ObjectDoesNotExist()
-        else:
-            request_type = request.GET['type']
 
-            if request_type == 'customer':
-                user_id = user.id
-            elif request_type == 'worker':
-                user_id = user.workers_set.first().id
-            else:
-                raise TypeNotValidException()
-            return JsonResponse({
-                'status': 'success',
-                'message': user_id,
-            })
+        if request_type == 'customer':
+            user_id = user.id
+        elif request_type == 'worker':
+            user_id = user.workers_set.first().id
+        else:
+            raise TypeNotValidException()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': user_id,
+        })
     except ObjectDoesNotExist:
         response = JsonResponse({
             'status': 'error',
