@@ -2,8 +2,17 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+class Profession(models.Model):
+    name = models.CharField(max_length=255)
+    approved = models.BooleanField()
+
+    def __str__(self):
+        return self.name
+
+
 class Worker(models.Model):
     user = models.ForeignKey(User)
+    professions = models.ManyToManyField(Profession, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -29,15 +38,6 @@ class Review(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-class Profession(models.Model):
-    name = models.CharField(max_length=255)
-    approved = models.BooleanField()
-    workers = models.ManyToManyField(Worker, blank=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Request(models.Model):
