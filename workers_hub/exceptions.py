@@ -1,0 +1,2 @@
+class TypeNotSpecifiedException(Exception):
+    pass
