@@ -15,6 +15,7 @@ class Review(models.Model):
     user = models.ForeignKey(User)
     worker = models.ForeignKey(Worker)
     type = models.CharField(max_length=255)
+    message = models.TextField()
 
 
 class Profession(models.Model):

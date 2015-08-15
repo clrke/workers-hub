@@ -148,3 +148,18 @@ def create_request(req):
         'status': 'ok',
         'message': request.subject
     })
+
+
+def show_worker(request, id):
+    worker = Worker.objects.get(id=id)
+    user = worker.user
+    profile = user.userprofile_set.first()
+    reviews = worker.review_set.all()
+    return JsonResponse({
+        'username': user.username,
+        'first': user.first_name,
+        'last': user.last_name,
+        'email': user.email,
+        'mobile': profile.mobile_number,
+        'reviews': [review.message for review in reviews]
+    })
