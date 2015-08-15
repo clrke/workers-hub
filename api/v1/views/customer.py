@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from workers_hub.decorators import customer_api_confirmation
-from workers_hub.models import Request, Worker, Profession, Image
+from workers_hub.models import Request, Worker, Profession, Image, Proposal
 
 
 @customer_api_confirmation
@@ -103,12 +103,13 @@ def show_worker(request, worker_id):
 
 @customer_api_confirmation
 def accept_proposal(request, request_id, proposal_id):
-    # worker = Worker.objects.get(id=worker_id)
-    # user = worker.user
-    # profile = user.userprofile_set.first()
-    # reviews = worker.review_set.all()
-    return JsonResponse({'status': 'error',
-                         'message': 'Not implemented yet.'})
+    proposal = Proposal.objects.get(id=proposal_id)
+    request = Request.objects.get(id=request_id)
+    proposal.status = 'ACCEPTED'
+    request.status = 'ACCEPTED'
+    proposal.save()
+    request.save()
+    return JsonResponse({'status': 'success'})
 
 
 @customer_api_confirmation
