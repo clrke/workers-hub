@@ -75,38 +75,6 @@ def login(request):
 
 
 @csrf_exempt
-def create_proposal(request):
-    try:
-        data = json.loads(request.body)
-    except ValueError:
-        data = request.POST
-
-    if 'message' not in data:
-        raise MissingArgumentsException('message')
-    if 'cost' not in data:
-        raise MissingArgumentsException('cost')
-    if 'status' not in data:
-        raise MissingArgumentsException('status')
-    if 'worker_id' not in data:
-        raise MissingArgumentsException('worker_id')
-    if 'request_id' not in data:
-        raise MissingArgumentsException('request_id')
-
-    worker = Worker.objects.get(id=data['worker_id'])
-    request = Request.objects.get(id=data['request_id'])
-
-    proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status=data['status'],
-                        request=request)
-
-    proposal.save()
-
-    return JsonResponse({
-        'status': 'success',
-        'message': proposal.worker.user.username,
-    })
-
-
-@csrf_exempt
 def create_request(req):
     try:
         data = json.loads(req.body)
@@ -166,6 +134,38 @@ def create_request(req):
     return JsonResponse({
         'status': 'ok',
         'message': request.subject
+    })
+
+
+@csrf_exempt
+def create_proposal(request):
+    try:
+        data = json.loads(request.body)
+    except ValueError:
+        data = request.POST
+
+    if 'message' not in data:
+        raise MissingArgumentsException('message')
+    if 'cost' not in data:
+        raise MissingArgumentsException('cost')
+    if 'status' not in data:
+        raise MissingArgumentsException('status')
+    if 'worker_id' not in data:
+        raise MissingArgumentsException('worker_id')
+    if 'request_id' not in data:
+        raise MissingArgumentsException('request_id')
+
+    worker = Worker.objects.get(id=data['worker_id'])
+    request = Request.objects.get(id=data['request_id'])
+
+    proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status=data['status'],
+                        request=request)
+
+    proposal.save()
+
+    return JsonResponse({
+        'status': 'success',
+        'message': proposal.worker.user.username,
     })
 
 
