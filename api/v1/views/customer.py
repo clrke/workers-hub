@@ -124,6 +124,7 @@ def list_proposals(req, request_id):
         'message': [{
                         'id': proposal.id,
                         'worker': proposal.worker.user.username,
+                        'worker_id': proposal.worker_id,
                         'cost': proposal.cost,
                         'message': proposal.message,
                         'request': proposal.request.subject,
