@@ -125,6 +125,7 @@ def list_proposals(req, request_id):
                         'id': proposal.id,
                         'worker': proposal.worker.user.username,
                         'worker_id': proposal.worker_id,
+                        'worker_mobile_number': proposal.worker.user.userprofile_set.first().mobile_number,
                         'cost': proposal.cost,
                         'message': proposal.message,
                         'request': proposal.request.subject,
