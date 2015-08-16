@@ -65,9 +65,9 @@ class Request(models.Model):
         accepted_workers = [proposal.worker_id for proposal in self.proposal_set.all() if proposal.status == Proposal.ACCEPTED]
 
         if len(accepted_workers):
-            return accepted_workers[0]
+            return str(accepted_workers[0])
         else:
-            return None
+            return ''
 
 
 class Image(models.Model):
