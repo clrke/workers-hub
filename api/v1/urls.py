@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^requests/(?P<request_id>\d+)/proposals/(?P<proposal_id>\d+)$', api.v1.views.customer.accept_proposal),
     url(r'^requests/(?P<request_id>\d+)/review$', api.v1.views.customer.write_review),
     url(r'^workers/(?P<worker_id>\d+)$', api.v1.views.customer.show_worker),
+    url(r'^reviews$', api.v1.views.customer.show_reviews),
     url(r'^professions', api.v1.views.public.professions),
     url(r'^worker/requests$', api.v1.views.worker.requests),
     url(r'^worker/proposals$', api.v1.views.worker.proposals),

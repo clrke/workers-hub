@@ -227,3 +227,20 @@ def write_review(req, request_id):
     response.status_code = 405
 
     return response
+
+
+@customer_api_confirmation
+def show_reviews(request):
+    user = request.user
+    reviews = user.review_set.all()
+
+    return JsonResponse({
+        'status': 'success',
+        'message': [
+            {
+                'message': review.message,
+                'rating': review.rating
+            }
+            for review in reviews if review.type == Review.WORKER_CUSTOMER
+            ]
+    })
