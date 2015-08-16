@@ -61,6 +61,14 @@ class Request(models.Model):
     def __str__(self):
         return '[%s] %s' % (self.user.username, self.subject)
 
+    def accepted_worker_id(self):
+        accepted_workers = [proposal.worker_id for proposal in self.proposal_set.all() if proposal.status == Proposal.ACCEPTED]
+
+        if len(accepted_workers):
+            return accepted_workers[0]
+        else:
+            return None
+
 
 class Image(models.Model):
     url = models.CharField(max_length=255)

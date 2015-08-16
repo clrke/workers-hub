@@ -11,15 +11,19 @@ def request(req):
 
         return JsonResponse({
             'status': 'success',
-            'message': [{'id': request.id,
-                         'subject': request.subject,
-                         'description': request.description,
-                         'range_min': request.range_min,
-                         'range_max': request.range_max,
-                         'tags': [profession.name for profession in request.professions.all()],
-                         'images': [image.url for image in request.image_set.all()],
-                         'status': request.status,
-                         } for request in user.request_set.all()],
+            'message': [
+                {
+                    'id': request.id,
+                     'subject': request.subject,
+                     'description': request.description,
+                     'range_min': request.range_min,
+                     'range_max': request.range_max,
+                     'tags': [profession.name for profession in request.professions.all()],
+                     'images': [image.url for image in request.image_set.all()],
+                     'status': request.status,
+                     'accepted_worker_id': request.accepted_worker_id(),
+                }
+                for request in user.request_set.all()],
         })
     else:
 
