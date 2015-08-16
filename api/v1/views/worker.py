@@ -24,15 +24,12 @@ def proposal(req, request_id):
 
         if Proposal.objects.filter(worker_id=req.worker.id, request_id=request_id).exists():
             return JsonResponse({
-            'status': 'error',
-            'message': 'You cannot submit multiple bids for one request.',
-        })
-
+                'status': 'error',
+                'message': 'You cannot submit multiple bids for one request.',
+            })
 
         proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status=Proposal.OPEN,
                             request=request)
-
-
 
         proposal.save()
 
@@ -97,7 +94,7 @@ def requests(req):
                 'status': request.status,
             }
             for request in available_requests
-        ],
+            ],
     })
 
 
@@ -124,7 +121,7 @@ def proposals(req):
                 'status': proposal.status,
             }
             for proposal in worker.proposal_set.all()
-        ],
+            ],
     })
 
 
@@ -151,7 +148,7 @@ def accepted(request):
                 'status': proposal.status,
             }
             for proposal in worker.proposal_set.all() if proposal.status == Proposal.ACCEPTED
-        ],
+            ],
     })
 
 
