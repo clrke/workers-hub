@@ -37,7 +37,12 @@ class Review(models.Model):
     WORKER_CUSTOMER = 'WORKER_CUSTOMER'
 
     def __str__(self):
-        return self.user.username
+        if self.type == self.CUSTOMER_WORKER:
+            return '[WORKER %d | %s] %s' % (self.rating, self.worker, self.message)
+        elif self.type == self.WORKER_CUSTOMER:
+            return '[CUSTOMER %d | %s] %s' % (self.rating, self.user, self.message)
+
+        return self.type
 
 
 class Request(models.Model):
@@ -54,7 +59,7 @@ class Request(models.Model):
     CLOSED = 'CLOSED'
 
     def __str__(self):
-        return self.subject
+        return '[%s] %s' % (self.user.username, self.subject)
 
 
 class Image(models.Model):
@@ -76,4 +81,4 @@ class Proposal(models.Model):
     ACCEPTED = 'ACCEPTED'
 
     def __str__(self):
-        return self.request.subject
+        return '[%s] %s' % (self.request.subject, self.message)
