@@ -120,7 +120,7 @@ def proposals(req):
                 'message': proposal.message,
                 'status': proposal.status,
             }
-            for proposal in worker.proposal_set.all()
+            for proposal in worker.proposal_set.all() if proposal.status == Proposal.OPEN
             ],
     })
 
