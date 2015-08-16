@@ -184,10 +184,11 @@ def write_review(req, request_id):
             data = req.POST
 
         request = Request.objects.get(id=request_id)
-        request.status = Request.CLOSED
-        request.save()
 
         worker_id = request.proposal_set.get(status=Request.ACCEPTED).worker_id
+
+        request.status = Request.CLOSED
+        request.save()
 
         user = req.user
         worker = Worker.objects.get(id=worker_id)
