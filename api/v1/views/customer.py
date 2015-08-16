@@ -23,7 +23,8 @@ def request(req):
                     'status': request.status,
                     'accepted_worker_id': request.accepted_worker_id(),
                 }
-                for request in user.request_set.all()],
+                for request in user.request_set.all()
+                ],
         })
     else:
 
@@ -101,19 +102,23 @@ def show_worker(request, worker_id):
     user = worker.user
     profile = user.userprofile_set.first()
     reviews = worker.review_set.all()
-    return JsonResponse({'status': 'success',
-                         'message': {
-                             'username': user.username,
-                             'first': user.first_name,
-                             'last': user.last_name,
-                             'email': user.email,
-                             'mobile': profile.mobile_number,
-                             'reviews': [
-                                 {
-                                     'message': review.message,
-                                     'rating': review.rating
-                                 } for review in reviews if review.type == Review.CUSTOMER_WORKER]
-                         }})
+    return JsonResponse({
+        'status': 'success',
+        'message': {
+            'username': user.username,
+            'first': user.first_name,
+            'last': user.last_name,
+            'email': user.email,
+            'mobile': profile.mobile_number,
+            'reviews': [
+                {
+                    'message': review.message,
+                    'rating': review.rating
+                }
+                for review in reviews if review.type == Review.CUSTOMER_WORKER
+                ]
+        }
+    })
 
 
 @customer_api_confirmation
@@ -133,17 +138,20 @@ def list_proposals(req, request_id):
     proposals = request.proposal_set.all()
     return JsonResponse({
         'status': 'success',
-        'message': [{
-                        'id': proposal.id,
-                        'worker': proposal.worker.user.username,
-                        'worker_id': proposal.worker_id,
-                        'worker_mobile_number': proposal.worker.user.userprofile_set.first().mobile_number,
-                        'cost': proposal.cost,
-                        'message': proposal.message,
-                        'request': proposal.request.subject,
-                        'status': proposal.status,
+        'message': [
+            {
+                'id': proposal.id,
+                'worker': proposal.worker.user.username,
+                'worker_id': proposal.worker_id,
+                'worker_mobile_number': proposal.worker.user.userprofile_set.first().mobile_number,
+                'cost': proposal.cost,
+                'message': proposal.message,
+                'request': proposal.request.subject,
+                'status': proposal.status,
 
-                    } for proposal in proposals]
+            }
+            for proposal in proposals
+            ]
     })
 
 
@@ -173,6 +181,7 @@ def cancel_request(request, request_id):
         'message': 'Invalid request method.',
     })
     response.status_code = 404
+    return response
 
 
 @customer_api_confirmation
