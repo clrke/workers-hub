@@ -69,7 +69,7 @@ def requests(req):
 
     available_requests = []
 
-    for request in Request.objects.all():
+    for request in Request.objects.filter(status=Request.OPEN):
         available = True
 
         for profession in request.professions.all():
