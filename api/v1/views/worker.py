@@ -22,8 +22,17 @@ def proposal(req, request_id):
         worker = req.worker
         request = Request.objects.get(id=request_id)
 
+        if Proposal.objects.filter(worker_id=req.worker.id, request_id=request_id).exists():
+            return JsonResponse({
+            'status': 'error',
+            'message': 'You cannot submit multiple bids for one request.',
+        })
+
+
         proposal = Proposal(cost=data['cost'], message=data['message'], worker=worker, status=Proposal.OPEN,
                             request=request)
+
+
 
         proposal.save()
 
