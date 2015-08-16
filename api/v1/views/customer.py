@@ -96,7 +96,11 @@ def show_worker(request, worker_id):
                              'last': user.last_name,
                              'email': user.email,
                              'mobile': profile.mobile_number,
-                             'reviews': [review.message for review in reviews if review.type == Review.CUSTOMER_WORKER]
+                             'reviews': [
+                                 {
+                                     'message': review.message,
+                                     'rating': review.rating
+                                 } for review in reviews if review.type == Review.CUSTOMER_WORKER]
                          }})
 
 
@@ -165,8 +169,14 @@ def write_review(req, request_id):
         except ValueError:
             data = req.POST
 
+        request = Request.objects.get(id=request_id)
+        request.status = Request.CLOSED
+        request.save()
+
+        worker_id = request.proposal_set.get(status=Request.ACCEPTED).worker_id
+
         user = req.user
-        worker = Worker.objects.get(id=data['worker_id'])
+        worker = Worker.objects.get(id=worker_id)
         rating = data['rating']
         type = Review.CUSTOMER_WORKER
         message = data['message']
@@ -174,11 +184,6 @@ def write_review(req, request_id):
         review = Review(user=user, worker=worker, rating=rating, type=type, message=message)
 
         review.save()
-
-        request = Request.objects.get(id=request_id)
-        request.status = Request.CLOSED
-        request.save()
-
         return JsonResponse({
             'status': 'success',
             'message': review.user.username
