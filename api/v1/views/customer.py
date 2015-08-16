@@ -125,6 +125,13 @@ def show_worker(request, worker_id):
 def accept_proposal(request, request_id, proposal_id):
     proposal = Proposal.objects.get(id=proposal_id)
     request = Request.objects.get(id=request_id)
+    if proposal.worker.user.id == request.user.id:
+        response = JsonResponse({
+            'status': 'error',
+            'message': 'You cannot bid on your own request',
+        })
+        response.status_code = 404
+        return response
     proposal.status = 'ACCEPTED'
     request.status = 'ACCEPTED'
     proposal.save()
