@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^worker/requests$', api.v1.views.worker.requests),
     url(r'^worker/proposals$', api.v1.views.worker.proposals),
     url(r'^worker/accepted$', api.v1.views.worker.accepted),
+    url(r'^worker/requests/(?P<request_id>\d+)/review$', api.v1.views.worker.write_review),
 ]

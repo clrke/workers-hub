@@ -2,7 +2,7 @@ import json
 from django.http import JsonResponse
 from workers_hub.decorators import worker_api_confirmation
 from workers_hub.exceptions import MissingArgumentsException
-from workers_hub.models import Proposal
+from workers_hub.models import Proposal, Review
 from workers_hub.models import Request
 
 
@@ -143,4 +143,31 @@ def accepted(request):
             }
             for proposal in worker.proposal_set.all() if proposal.status == Proposal.ACCEPTED
         ],
+    })
+
+
+@worker_api_confirmation
+def write_review(req, request_id):
+    try:
+        data = json.loads(req.body)
+    except ValueError:
+        data = req.POST
+
+    request = Request.objects.get(id=request_id)
+    request.status = Request.CLOSED
+    request.save()
+
+    user_id = request.user_id
+
+    worker = req.worker
+    rating = data['rating']
+    type = Review.WORKER_CUSTOMER
+    message = data['message']
+
+    review = Review(user_id=user_id, worker=worker, rating=rating, type=type, message=message)
+    review.save()
+
+    return JsonResponse({
+        'status': 'success',
+        'message': review.user.username
     })
