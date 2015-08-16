@@ -40,6 +40,14 @@ def request(req):
         user = req.user
         image_files = req.FILES
 
+        if range_min > range_max:
+            response = JsonResponse({
+                'status': 'error',
+                'message': 'Minimum range is bigger than maximum range.',
+            })
+            response.status_code = 404
+            return response
+
         professions = []
         images = []
 
